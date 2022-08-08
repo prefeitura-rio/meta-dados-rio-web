@@ -19,6 +19,17 @@ const Navbar = () => {
     navigation: (
       <>
         <li className="nav-item">
+          <Link href="/">
+            <a
+              className={
+                router.pathname === "/" ? "nav-link active" : "nav-link"
+              }
+            >
+              Home
+            </a>
+          </Link>
+        </li>
+        <li className="nav-item">
           <Link href="/dashboard">
             <a
               className={
