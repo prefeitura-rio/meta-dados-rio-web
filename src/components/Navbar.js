@@ -42,6 +42,17 @@ const Navbar = () => {
             </a>
           </Link>
         </li>
+        <li className="nav-item">
+          <Link href="/discover">
+            <a
+              className={
+                router.pathname === "/discover" ? "nav-link active" : "nav-link"
+              }
+            >
+              Discover
+            </a>
+          </Link>
+        </li>
       </>
     ),
     userManagement: (
