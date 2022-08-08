@@ -43,10 +43,7 @@ const LoginPage = () => {
     [isAuthenticated, router];
 
   return (
-    <Layout
-      title="Metadados Rio | Login"
-      content="Login page for Metadados Rio"
-    >
+    <Layout pageName="Login" content="Login page for Metadados Rio">
       <h1 className="display-4 mt-5">Login Page</h1>
       <form className="bg-light p-5 mt-5 mb-5" onSubmit={onSubmit}>
         <h3>Log Into Your Account</h3>

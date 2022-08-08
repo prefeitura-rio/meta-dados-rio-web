@@ -52,10 +52,7 @@ const RegisterPage = () => {
     [registerSuccess, router];
 
   return (
-    <Layout
-      title="Metadados Rio | Register"
-      content="Register page for Metadados Rio"
-    >
+    <Layout pageName="Register" content="Register page for Metadados Rio">
       <h1 className="display-4 mt-5">Register Page</h1>
       <form className="bg-light p-5 mt-5 mb-5" onSubmit={onSubmit}>
         <h3>Create An Account</h3>

@@ -37,10 +37,7 @@ const Dashboard = () => {
   }, [loading, isAuthenticated, router, user]);
 
   return (
-    <Layout
-      title="Metadados Rio | Dashboard"
-      content="Dashboard page for Metadados Rio"
-    >
+    <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">
       {content}
     </Layout>
   );
