@@ -1,3 +1,1 @@
 # To do
-
-- Verificar loader

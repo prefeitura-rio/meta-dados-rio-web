@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { login, resetRegisterSuccess } from "../actions/auth";
 import Layout from "../hocs/Layout";
-import { Loader } from "react-loader-spinner";
+import { Oval } from "react-loader-spinner";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -78,18 +78,15 @@ const LoginPage = () => {
             required
           ></input>
         </div>
-        {/* {loading ? (
+        {loading ? (
           <div className="d-flex justify-content-center align-items-center mt-5">
-            <Loader type="Oval" color="#00BFFF" width={50} height={50} />
+            <Oval color="#00BFFF" width={50} height={50} />
           </div>
         ) : (
           <button className="btn btn-primary mt-5" type="submit">
             Login
           </button>
-        )} */}
-        <button className="btn btn-primary mt-5" type="submit">
-          Login
-        </button>
+        )}
       </form>
     </Layout>
   );
