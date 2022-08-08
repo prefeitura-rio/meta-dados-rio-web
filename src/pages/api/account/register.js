@@ -2,8 +2,15 @@ import { API_URL } from "../../../config";
 
 const register = async (req, res) => {
   if (req.method === "POST") {
-    const { first_name, last_name, username, email, password, re_password } =
-      req.body;
+    const {
+      first_name,
+      last_name,
+      username,
+      email,
+      password,
+      re_password,
+      registration_token
+    } = req.body;
 
     const body = JSON.stringify({
       first_name,
@@ -11,7 +18,8 @@ const register = async (req, res) => {
       username,
       email,
       password,
-      re_password
+      re_password,
+      registration_token
     });
 
     try {

@@ -97,7 +97,15 @@ export const request_refresh = () => async (dispatch) => {
 };
 
 export const register =
-  (first_name, last_name, username, email, password, re_password) =>
+  (
+    first_name,
+    last_name,
+    username,
+    email,
+    password,
+    re_password,
+    registration_token
+  ) =>
   async (dispatch) => {
     dispatch({ type: SET_AUTH_LOADING });
 
@@ -107,7 +115,8 @@ export const register =
       username,
       email,
       password,
-      re_password
+      re_password,
+      registration_token
     });
 
     try {

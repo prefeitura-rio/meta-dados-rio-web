@@ -18,21 +18,38 @@ const RegisterPage = () => {
     username: "",
     email: "",
     password: "",
-    re_password: ""
+    re_password: "",
+    registration_token: ""
   });
 
-  const { first_name, last_name, username, email, password, re_password } =
-    formData;
+  const {
+    first_name,
+    last_name,
+    username,
+    email,
+    password,
+    re_password,
+    registration_token
+  } = formData;
 
-  const onChange = (e) =>
+  const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (dispatch && dispatch !== null && dispatch !== undefined) {
       dispatch(
-        register(first_name, last_name, username, email, password, re_password)
+        register(
+          first_name,
+          last_name,
+          username,
+          email,
+          password,
+          re_password,
+          registration_token
+        )
       );
     }
   };
@@ -137,6 +154,20 @@ const RegisterPage = () => {
             placeholder="Re-enter Password"
             onChange={onChange}
             value={re_password}
+            required
+          ></input>
+        </div>
+        <div className="form-group">
+          <label className="form-label mt-5" htmlFor="registration_token">
+            <strong>Registration Token *</strong>
+          </label>
+          <input
+            className="form-control"
+            type="text"
+            name="registration_token"
+            placeholder="Registration Token"
+            onChange={onChange}
+            value={registration_token}
             required
           ></input>
         </div>
