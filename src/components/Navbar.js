@@ -35,7 +35,6 @@ const Navbar = () => {
     ),
     userManagement: (
       <>
-        {" "}
         <li className="nav-item">
           <a className="nav-link" href="#!" onClick={logoutHandler}>
             Logout
