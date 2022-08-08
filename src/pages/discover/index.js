@@ -50,6 +50,17 @@ const Discover = () => {
                   </div>
                 </div>
               ))}
+              {projects === [] && (
+                <div className="col-md-12">
+                  <div className="card mt-4">
+                    <div className="p-3">
+                      <h2 className="card-title fw-bold">
+                        Nenhum projeto encontrado! 😭
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
