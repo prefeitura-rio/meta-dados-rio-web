@@ -10,11 +10,27 @@ const LoginPage = () => {
   const router = useRouter();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const loading = useSelector((state) => state.auth.loading);
+  const errorMessage = useSelector((state) => state.auth.errorMessages.login);
+
+  const [errorHeading, setErrorHeading] = useState(<></>);
 
   const [formData, setFormData] = useState({
     username: "",
     password: ""
   });
+
+  useEffect(() => {
+    if (errorMessage !== "") {
+      setErrorHeading(
+        <div className="alert alert-danger" role="alert">
+          {errorMessage}
+        </div>
+      );
+      window.scrollTo(0, 0);
+    } else {
+      setErrorHeading(<></>);
+    }
+  }, [errorMessage]);
 
   const { username, password } = formData;
 
@@ -39,12 +55,12 @@ const LoginPage = () => {
     if (isAuthenticated) {
       router.push("/dashboard");
     }
-  }),
-    [isAuthenticated, router];
+  }, [isAuthenticated, router]);
 
   return (
     <Layout pageName="Login" content="Login page for Metadados Rio">
       <h1 className="display-4 mt-5">Login Page</h1>
+      <div className="mt-5">{errorHeading}</div>
       <form className="bg-light p-5 mt-5 mb-5" onSubmit={onSubmit}>
         <h3>Log Into Your Account</h3>
         <div className="form-group">

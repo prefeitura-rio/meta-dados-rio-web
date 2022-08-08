@@ -11,6 +11,11 @@ const RegisterPage = () => {
   const registerSuccess = useSelector((state) => state.auth.registerSuccess);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const loading = useSelector((state) => state.auth.loading);
+  const errorMessage = useSelector(
+    (state) => state.auth.errorMessages.register
+  );
+
+  const [errorHeading, setErrorHeading] = useState(<></>);
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -55,22 +60,34 @@ const RegisterPage = () => {
   };
 
   useEffect(() => {
+    if (errorMessage !== "") {
+      setErrorHeading(
+        <div className="alert alert-danger" role="alert">
+          {errorMessage}
+        </div>
+      );
+      window.scrollTo(0, 0);
+    } else {
+      setErrorHeading(<></>);
+    }
+  }, [errorMessage]);
+
+  useEffect(() => {
     if (isAuthenticated) {
       router.push("/dashboard");
     }
-  }),
-    [isAuthenticated, router];
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     if (registerSuccess) {
       router.push("/login");
     }
-  }),
-    [registerSuccess, router];
+  }, [registerSuccess, router]);
 
   return (
     <Layout pageName="Register" content="Register page for Metadados Rio">
       <h1 className="display-4 mt-5">Register Page</h1>
+      <div className="mt-5">{errorHeading}</div>
       <form className="bg-light p-5 mt-5 mb-5" onSubmit={onSubmit}>
         <h3>Create An Account</h3>
         <div className="form-group">

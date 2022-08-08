@@ -129,18 +129,22 @@ export const register =
         body
       });
 
+      const data = await res.json();
+
       if (res.status === 201) {
         dispatch({
           type: REGISTER_SUCCESS
         });
       } else {
         dispatch({
-          type: REGISTER_FAIL
+          type: REGISTER_FAIL,
+          payload: data
         });
       }
     } catch (err) {
       dispatch({
-        type: REGISTER_FAIL
+        type: REGISTER_FAIL,
+        payload: { error: "Something went wrong when registering" }
       });
     }
 
@@ -166,6 +170,8 @@ export const login = (username, password) => async (dispatch) => {
       body
     });
 
+    const data = await res.json();
+
     if (res.status === 200) {
       dispatch({
         type: LOGIN_SUCCESS
@@ -173,12 +179,14 @@ export const login = (username, password) => async (dispatch) => {
       dispatch(load_user());
     } else {
       dispatch({
-        type: LOGIN_FAIL
+        type: LOGIN_FAIL,
+        payload: data
       });
     }
   } catch (err) {
     dispatch({
-      type: LOGIN_FAIL
+      type: LOGIN_FAIL,
+      payload: { error: "Something went wrong when logging in" }
     });
   }
 

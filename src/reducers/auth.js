@@ -20,7 +20,11 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   loading: false,
-  registerSuccess: false
+  registerSuccess: false,
+  errorMessages: {
+    login: "",
+    register: ""
+  }
 };
 
 const authReducer = (state = initialState, action) => {
@@ -30,11 +34,19 @@ const authReducer = (state = initialState, action) => {
     case REGISTER_SUCCESS:
       return {
         ...state,
-        registerSuccess: true
+        registerSuccess: true,
+        errorMessages: {
+          ...state.errorMessages,
+          register: ""
+        }
       };
     case REGISTER_FAIL:
       return {
-        ...state
+        ...state,
+        errorMessages: {
+          ...state.errorMessages,
+          register: payload.error
+        }
       };
     case RESET_REGISTER_SUCCESS:
       return {
@@ -44,12 +56,20 @@ const authReducer = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       return {
         ...state,
-        isAuthenticated: true
+        isAuthenticated: true,
+        errorMessages: {
+          ...state.errorMessages,
+          login: ""
+        }
       };
     case LOGIN_FAIL:
       return {
         ...state,
-        isAuthenticated: false
+        isAuthenticated: false,
+        errorMessages: {
+          ...state.errorMessages,
+          login: payload.error
+        }
       };
     case LOGOUT_SUCCESS:
       return {
