@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../actions/auth";
+import Image from 'next/image'
+import Branco from '../../public/logo-branco-horizontal.svg'
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -18,17 +20,6 @@ const Navbar = () => {
   const authLinks = {
     navigation: (
       <>
-        <li className="nav-item">
-          <Link href="/">
-            <a
-              className={
-                router.pathname === "/" ? "nav-link active" : "nav-link"
-              }
-            >
-              Home
-            </a>
-          </Link>
-        </li>
         <li className="nav-item">
           <Link href="/dashboard">
             <a
@@ -69,22 +60,12 @@ const Navbar = () => {
   const guestLinks = {
     navigation: (
       <>
-        <li className="nav-item">
-          <Link href="/">
-            <a
-              className={
-                router.pathname === "/" ? "nav-link active" : "nav-link"
-              }
-            >
-              Home
-            </a>
-          </Link>
-        </li>
+      { /* Campo onde podemos adicionar futuros links para convidados */ }
       </>
     ),
     userManagement: (
       <>
-        <li className="nav-item">
+        <li className="nav-item font-Poppins font-semibold">
           <Link href="/register">
             <a
               className={
@@ -95,7 +76,8 @@ const Navbar = () => {
             </a>
           </Link>
         </li>
-        <li className="nav-item">
+        <div className="h-[1px] bg-slate-600 w-[]"></div>
+        <li className="nav-item font-Poppins font-semibold">
           <Link href="/login">
             <a
               className={
@@ -111,30 +93,40 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav className="flex navbar navbar-expand-md navbar-dark bg-[#277B7B]">
       <div className="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
         <ul className="navbar-nav me-auto">
           {isAuthenticated ? authLinks.navigation : guestLinks.navigation}
         </ul>
       </div>
-      <div className="mx-auto order-0">
-        <Link href="/">
-          <a className="navbar-brand mx-auto">Metadados Rio</a>
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target=".dual-collapse2"
-          aria-controls=".dual-collapse2"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+      <div className="flex pl-10">
+        <div className="flex justify-center items-center sm:h-[2rem] sm:w-[10rem]  2sm:h-[3rem] 2sm:w-[10rem] h-[20px] w-[150px]cursor-pointer">
+          <Link href="/">
+            <Image
+              src={Branco}
+              width={350}
+            />
+          </Link>
+        </div>
+        <div className="flex absolute right-3 items-end justify-center">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target=".dual-collapse2"
+            aria-controls=".dual-collapse2"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+        </div>
+        
       </div>
       <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">
-        <ul className="navbar-nav ms-auto">
+        
+        <ul className="navbar-nav ms-auto pl-10">
+          
           {isAuthenticated
             ? authLinks.userManagement
             : guestLinks.userManagement}
