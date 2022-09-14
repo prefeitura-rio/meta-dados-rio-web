@@ -100,7 +100,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="flex pl-10">
-        <div className="flex justify-center items-center sm:h-[2rem] sm:w-[10rem]  2sm:h-[3rem] 2sm:w-[10rem] h-[20px] w-[150px]cursor-pointer">
+        <div className="cursor-pointer flex justify-center items-center sm:h-[2rem] sm:w-[10rem]  2sm:h-[3rem] 2sm:w-[10rem] h-[20px] w-[150px]">
           <Link href="/">
             <Image
               src={Branco}
