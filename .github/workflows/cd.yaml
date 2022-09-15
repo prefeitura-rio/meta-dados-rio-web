@@ -51,4 +51,4 @@ jobs:
         run: |-
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_NAME:TAG=$IMAGE_NAME:$GITHUB_SHA
           ./kustomize build . | kubectl apply -f -
-          kubectl rollout status -w -n meta-dados-rio deployment/meta-dados-rio-web
+          kubectl rollout status -w -n beta-meta-dados-rio deployment/meta-dados-rio-web
