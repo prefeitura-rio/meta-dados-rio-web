@@ -2,6 +2,7 @@ import Head from "next/head";
 import Script from "next/script";
 import { Provider } from "react-redux";
 import { useStore } from "../store";
+import '../styles/global.css'
 
 const App = ({ Component, pageProps }) => {
   const store = useStore(pageProps.initialReduxState);
