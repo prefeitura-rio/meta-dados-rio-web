@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: meta-dados-rio-web
-  namespace: meta-dados-rio
+  namespace: beta-meta-dados-rio
 spec:
   replicas: 1
   strategy:
@@ -45,7 +45,7 @@ metadata:
   labels:
     app: meta-dados-rio-web
   name: meta-dados-rio-web
-  namespace: meta-dados-rio
+  namespace: beta-meta-dados-rio
 spec:
   ports:
     - name: "80"
@@ -60,7 +60,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: meta-dados-rio-web-ingress
-  namespace: meta-dados-rio
+  namespace: beta-meta-dados-rio
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
