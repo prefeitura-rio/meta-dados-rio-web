@@ -86,19 +86,19 @@ const RegisterPage = () => {
 
   return (
     <Layout pageName="Register" content="Register page for Metadados Rio">
-      <h1 className="display-4 mt-5">Register Page</h1>
+      <h1 className="display-4 mt-5">Página de Registro</h1>
       <div className="mt-5">{errorHeading}</div>
-      <form className="bg-light p-5 mt-5 mb-5" onSubmit={onSubmit}>
-        <h3>Create An Account</h3>
+      <form className="bg-[#fff] p-5 mt-5 mb-5 drop-shadow-xl rounded-lg" onSubmit={onSubmit}>
+        <h3>Crie sua conta</h3>
         <div className="form-group">
           <label className="form-label mt-5" htmlFor="first_name">
-            <strong>First Name *</strong>
+            <strong>Primeiro Nome *</strong>
           </label>
           <input
             className="form-control"
             type="text"
             name="first_name"
-            placeholder="First Name"
+            placeholder="Primeiro Nome"
             onChange={onChange}
             value={first_name}
             required
@@ -106,13 +106,13 @@ const RegisterPage = () => {
         </div>
         <div className="form-group">
           <label className="form-label mt-5" htmlFor="last_name">
-            <strong>Last Name *</strong>
+            <strong>Sobrenome *</strong>
           </label>
           <input
             className="form-control"
             type="text"
             name="last_name"
-            placeholder="Last Name"
+            placeholder="Sobrenome"
             onChange={onChange}
             value={last_name}
             required
@@ -120,13 +120,13 @@ const RegisterPage = () => {
         </div>
         <div className="form-group">
           <label className="form-label mt-5" htmlFor="username">
-            <strong>Username *</strong>
+            <strong>Usuário *</strong>
           </label>
           <input
             className="form-control"
             type="text"
             name="username"
-            placeholder="Username"
+            placeholder="Usuário"
             onChange={onChange}
             value={username}
             required
@@ -148,13 +148,13 @@ const RegisterPage = () => {
         </div>
         <div className="form-group">
           <label className="form-label mt-5" htmlFor="password">
-            <strong>Password *</strong>
+            <strong>Senha *</strong>
           </label>
           <input
             className="form-control"
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Senha"
             onChange={onChange}
             value={password}
             required
@@ -162,13 +162,13 @@ const RegisterPage = () => {
         </div>
         <div className="form-group">
           <label className="form-label mt-5" htmlFor="re_password">
-            <strong>Re-enter Password *</strong>
+            <strong>Reescreva sua Senha *</strong>
           </label>
           <input
             className="form-control"
             type="password"
             name="re_password"
-            placeholder="Re-enter Password"
+            placeholder="Reescreva sua senha"
             onChange={onChange}
             value={re_password}
             required
@@ -193,7 +193,7 @@ const RegisterPage = () => {
             <Oval color="#00BFFF" width={50} height={50} />
           </div>
         ) : (
-          <button className="btn btn-primary mt-5" type="submit">
+          <button className="mt-5 border-2 bg-blue-600 rounded-lg px-5 py-2 hover:bg-blue-800 hover:text-white drop-shadow-md" type="submit">
             Create Account
           </button>
         )}
