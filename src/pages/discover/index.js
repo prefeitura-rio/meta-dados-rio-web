@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import React from "react";
 import Layout from "../../hocs/Layout";
 import { Oval } from "react-loader-spinner";
-import { API_URL } from "../../config";
+import Link from "next/link";
+import axios from "axios";
 
 const Discover = () => {
   const router = useRouter();
@@ -13,16 +14,27 @@ const Discover = () => {
   const loading = useSelector((state) => state.auth.loading);
 
   const [content, setContent] = useState(<></>);
-  const [projects, setProjects] = useState([]);
+//  const [projects, setProjects] = useState([]);
+  
+//    const fetchData = async () => {
+//      const res = await fetch("/api/meta/projects");
+//      const data = await res.json();
+//      setProjects(data);
+//    };
+//    fetchData();
+  const [projectos, setProject] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("/api/meta/projects");
-      const data = await res.json();
-      setProjects(data);
-    };
-    fetchData();
-  }, []);
+  useEffect(() => {  
+    axios
+      .get("https://meta.dados.rio/api/projects/")
+      .then(( response ) =>{
+        console.log(response.data.results)
+      })
+      .catch(() => {
+        console.log("deu ruim")
+      })
+
+    }, []);
 
   useEffect(() => {
     if (loading) {
@@ -39,18 +51,21 @@ const Discover = () => {
           </div>
           <div className="container-fluid">
             <div className="row p-3">
-              {projects.map((project) => (
-                <div key={project.name} className="col-md-4">
+              {projectos.map((projectos) => (
+                <div key={projectos.name} className="col-md-4">
                   <div className="card mt-4">
-                    <div className="btn btn-primary">
-                      <div className="p-3">
-                        <h2 className="card-title fw-bold">{project.name}</h2>
+                    <Link href={`/discover/${projectos.name}`}>
+                      <div className="btn btn-primary">
+                        <div className="p-3">
+                          <h2 className="card-title fw-bold">{projectos.name}</h2>
+                        </div>
                       </div>
-                    </div>
+                    </Link> 
+                    
                   </div>
                 </div>
               ))}
-              {projects === [] && (
+              {projectos === [] && (
                 <div className="col-md-12">
                   <div className="card mt-4">
                     <div className="p-3">
@@ -68,7 +83,7 @@ const Discover = () => {
     } else {
       router.push("/login");
     }
-  }, [loading, isAuthenticated, router, projects]);
+  }, [loading, isAuthenticated, router,]);
 
   return (
     <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">
