@@ -2,35 +2,36 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import React from "react";
-import Layout from "../../hocs/Layout";
+import Layout from "../../../hocs/Layout";
 import { Oval } from "react-loader-spinner";
 import Link from "next/link";
 import axios from "axios";
 
-const Discover = () => {
+function Projeto() {
   const router = useRouter();
+
+  const { project } = router.query;
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const loading = useSelector((state) => state.auth.loading);
 
   const [content, setContent] = useState(<></>);
-  const [projects, setProjects] = useState(null);
-
+  const [datasets, setDatasets] = useState(null);
   useEffect(() => {
     axios
-      .get("/api/meta/projects")
+      .get("/api/meta/datasets/?project=" + project)
       .then((response) => {
         const data = response.data;
         if (data.length > 0) {
-          setProjects(data);
+          setDatasets(data);
         } else {
-          setProjects([]);
+          setDatasets([]);
         }
       })
       .catch(() => {
         console.error("Failed to fetch authenticated API");
       });
-  }, []);
+  }, [project, datasets]);
 
   useEffect(() => {
     if (loading) {
@@ -43,19 +44,19 @@ const Discover = () => {
       setContent(
         <div className="p-3 bg-light rounded-3">
           <div className="container-fluid py-3">
-            <h1 className="display-6 fw-bold">Projetos</h1>
+            <h1 className="display-6 fw-bold">Datasets</h1>
           </div>
           <div className="container-fluid">
             <div className="row p-3">
-              {projects &&
-                projects.map((projects) => (
-                  <div key={projects.name} className="col-md-4">
+              {datasets &&
+                datasets.map((datasets) => (
+                  <div key={datasets.name} className="col-md-4">
                     <div className="card mt-4">
-                      <Link href={`/discover/${projects.name}`}>
+                      <Link href={`/discover/${project}/${datasets.name}`}>
                         <div className="btn btn-primary">
                           <div className="p-3">
                             <h2 className="card-title fw-bold">
-                              {projects.name}
+                              {datasets.name}
                             </h2>
                           </div>
                         </div>
@@ -63,18 +64,18 @@ const Discover = () => {
                     </div>
                   </div>
                 ))}
-              {projects && projects.length === 0 && (
+              {datasets && datasets.length === 0 && (
                 <div className="col-md-12">
                   <div className="card mt-4">
                     <div className="p-3">
                       <h2 className="card-title fw-bold">
-                        Nenhum projeto encontrado! 😭
+                        Nenhum dataset encontrado! 😭
                       </h2>
                     </div>
                   </div>
                 </div>
               )}
-              {!projects && (
+              {!datasets && (
                 <div className="col-md-12">
                   <Oval color="#00BFFF" width={30} height={30} />
                 </div>
@@ -86,13 +87,13 @@ const Discover = () => {
     } else {
       router.push("/login");
     }
-  }, [loading, isAuthenticated, router, projects]);
+  }, [loading, isAuthenticated, router, datasets, project]);
 
   return (
     <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">
       {content}
     </Layout>
   );
-};
+}
 
-export default Discover;
+export default Projeto;
