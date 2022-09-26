@@ -6,6 +6,7 @@ import Layout from "../../../../../hocs/Layout";
 import { Oval } from "react-loader-spinner";
 import Link from "next/link";
 import axios from "axios";
+import Spreadsheet from "react-spreadsheet";
 
 function Table() {
   const router = useRouter();
@@ -17,6 +18,8 @@ function Table() {
 
   const [content, setContent] = useState(<></>);
   const [columns, setColumns] = useState(null);
+  const [spreadsheetData, setSpreadsheetData] = useState(null);
+
   useEffect(() => {
     axios
       .get(
@@ -35,6 +38,55 @@ function Table() {
           data[0].columns.length > 0
         ) {
           setColumns(data[0].columns);
+          let spreadsheetData = [];
+          spreadsheetData.push([
+            {
+              value: "Nome da coluna",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            { value: "Tipo", className: "fw-bold text-center", readOnly: true },
+            {
+              value: "Descrição",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            {
+              value: "Observações",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            {
+              value: "Nome original da coluna",
+              className: "fw-bold text-center",
+              readOnly: true
+            }
+          ]);
+          data[0].columns.forEach((column) => {
+            let columnData = [];
+            columnData.push({
+              value: column.name,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.type,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.description,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.comments,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.original_name,
+              className: "text-center"
+            });
+            spreadsheetData.push(columnData);
+          });
+          setSpreadsheetData(spreadsheetData);
         } else {
           setColumns([]);
         }
@@ -42,7 +94,7 @@ function Table() {
       .catch(() => {
         console.error("Failed to fetch authenticated API");
       });
-  }, [project, dataset, table, columns]);
+  }, [project, dataset, table]);
 
   useEffect(() => {
     if (loading) {
@@ -58,38 +110,21 @@ function Table() {
             <h1 className="display-6 fw-bold">Tabela {table}</h1>
           </div>
           <div className="container-fluid">
-            <div className="row p-3 table-responsive">
-              <table className="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nome da coluna</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Observações</th>
-                    <th scope="col">Nome original da coluna</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {columns !== null &&
-                    columns.map((column, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{column.name}</td>
-                        <td>{column.type}</td>
-                        <td>{column.description}</td>
-                        <td>{column.comments}</td>
-                        <td>{column.original_name}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+            {spreadsheetData !== null && (
+              <div className="p-3 table-responsive">
+                <Spreadsheet
+                  data={spreadsheetData}
+                  onChange={setSpreadsheetData}
+                />
+              </div>
+            )}
+            <div className="row p-3">
               {columns && columns.length === 0 && (
                 <div className="col-md-12">
                   <div className="card mt-4">
                     <div className="p-3">
                       <h2 className="card-title fw-bold">
-                        Nenhuma tabela encontrada! 😭
+                        Nenhuma coluna encontrada! 😭
                       </h2>
                     </div>
                   </div>
@@ -107,7 +142,16 @@ function Table() {
     } else {
       router.push("/login");
     }
-  }, [loading, isAuthenticated, router, columns, project, dataset, table]);
+  }, [
+    loading,
+    isAuthenticated,
+    router,
+    columns,
+    project,
+    dataset,
+    table,
+    spreadsheetData
+  ]);
 
   return (
     <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">
