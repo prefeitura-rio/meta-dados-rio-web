@@ -58,23 +58,32 @@ function Table() {
             <h1 className="display-6 fw-bold">Tabela {table}</h1>
           </div>
           <div className="container-fluid">
-            <div className="row p-3">
-              {columns &&
-                columns.map((columns) => (
-                  <div key={columns.name} className="col-md-4">
-                    <div className="card mt-4">
-                      <Link href={""}>
-                        <div className="btn btn-primary">
-                          <div className="p-3">
-                            <h2 className="card-title fw-bold">
-                              {columns.name}
-                            </h2>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
+            <div className="row p-3 table-responsive">
+              <table className="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome da coluna</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Observações</th>
+                    <th scope="col">Nome original da coluna</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {columns !== null &&
+                    columns.map((column, index) => (
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{column.name}</td>
+                        <td>{column.type}</td>
+                        <td>{column.description}</td>
+                        <td>{column.comments}</td>
+                        <td>{column.original_name}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
               {columns && columns.length === 0 && (
                 <div className="col-md-12">
                   <div className="card mt-4">
