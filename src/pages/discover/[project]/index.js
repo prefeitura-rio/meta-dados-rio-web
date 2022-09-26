@@ -19,11 +19,15 @@ function Projeto() {
   const [datasets, setDatasets] = useState(null);
   useEffect(() => {
     axios
-      .get("/api/meta/datasets/?project=" + project)
+      .get("/api/meta/projects/?name=" + project)
       .then((response) => {
         const data = response.data;
-        if (data.length > 0) {
-          setDatasets(data);
+        if (
+          data.length > 0 &&
+          data[0].datasets !== undefined &&
+          data[0].datasets.length > 0
+        ) {
+          setDatasets(data[0].datasets);
         } else {
           setDatasets([]);
         }
