@@ -35,7 +35,7 @@ function Projeto() {
       .catch(() => {
         console.error("Failed to fetch authenticated API");
       });
-  }, [project, datasets]);
+  }, [project]);
 
   useEffect(() => {
     if (loading) {

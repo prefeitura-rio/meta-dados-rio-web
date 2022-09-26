@@ -35,7 +35,7 @@ function Dataset() {
       .catch(() => {
         console.error("Failed to fetch authenticated API");
       });
-  }, [project, dataset, tables]);
+  }, [project, dataset]);
 
   useEffect(() => {
     if (loading) {
