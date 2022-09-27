@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { check_auth_status } from "../actions/auth";
 import { SITE_NAME } from "../config";
 import Head from "next/head";
@@ -12,6 +12,8 @@ const Layout = ({ pageName, content, children }) => {
   const router = useRouter();
   const [breadcrumbs, setBreadcrumbs] = useState();
   const dispatch = useDispatch();
+
+  const alerts = useSelector((state) => state.alert);
 
   useEffect(() => {
     if (dispatch && dispatch !== null && dispatch !== undefined) {
@@ -60,7 +62,19 @@ const Layout = ({ pageName, content, children }) => {
             </BreadcrumbItem>
           ))}
       </Breadcrumb>
-      <div className="container mt-5">{children}</div>
+      <div className="container mt-5">
+        {alerts !== null &&
+          alerts.map((alertObj, index) => (
+            <div
+              key={index}
+              className={`alert alert-${alertObj.alertType} fade show`}
+              role="alert"
+            >
+              {alertObj.msg}
+            </div>
+          ))}
+        {children}
+      </div>
     </>
   );
 };

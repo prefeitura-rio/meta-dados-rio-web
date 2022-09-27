@@ -1,14 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import Layout from "../../../../../hocs/Layout";
 import { Oval } from "react-loader-spinner";
 import axios from "axios";
 import Spreadsheet from "react-spreadsheet";
+import convertUrlToInternal from "../../../../../utils/convertUrl";
+import { add_alert, remove_alert } from "../../../../../actions/alert";
 
 function Table() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const { project, dataset, table } = router.query;
 
@@ -18,6 +21,7 @@ function Table() {
   const [content, setContent] = useState(<></>);
   const [columns, setColumns] = useState(null);
   const [tableInfo, setTableInfo] = useState(null);
+  const [tableInfoEdited, setTableInfoEdited] = useState(false);
   const [spreadsheetData, setSpreadsheetData] = useState(null);
 
   useEffect(() => {
@@ -98,6 +102,20 @@ function Table() {
   }, [project, dataset, table]);
 
   useEffect(() => {
+    if (tableInfoEdited && dispatch !== undefined) {
+      dispatch(
+        add_alert(
+          "tableInfoEdited",
+          "As informações da tabela foram editadas. Clique em salvar para confirmar as alterações.",
+          "warning"
+        )
+      );
+    } else {
+      dispatch(remove_alert("tableInfoEdited"));
+    }
+  }, [tableInfoEdited, dispatch]);
+
+  useEffect(() => {
     const onChange = (e) => {
       switch (e.target.id) {
         case "categories":
@@ -110,8 +128,23 @@ function Table() {
           break;
         default:
           setTableInfo({ ...tableInfo, [e.target.id]: e.target.value });
+          setTableInfoEdited(true);
           break;
       }
+    };
+    const onSubmit = (e) => {
+      e.preventDefault();
+      axios
+        .put(convertUrlToInternal(tableInfo.url), tableInfo)
+        .then((response) => {
+          setTableInfoEdited(false);
+          router.push(
+            "/discover/" + project + "/" + dataset + "/" + response.data.name
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     };
     if (loading) {
       setContent(
@@ -140,7 +173,7 @@ function Table() {
           <div className="container-fluid">
             {tableInfo && (
               <div className="collapse" id="collapseForm">
-                <form className="row g-3" action="#">
+                <form className="row g-3" onSubmit={onSubmit}>
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
                       <strong>Nome *</strong>

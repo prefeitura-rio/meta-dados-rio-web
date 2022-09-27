@@ -1,14 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import Layout from "../../../../hocs/Layout";
 import { Oval } from "react-loader-spinner";
 import Link from "next/link";
 import axios from "axios";
+import convertUrlToInternal from "../../../../utils/convertUrl";
+import { add_alert, remove_alert } from "../../../../actions/alert";
 
 function Dataset() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const { project, dataset } = router.query;
 
@@ -18,6 +21,7 @@ function Dataset() {
   const [content, setContent] = useState(<></>);
   const [tables, setTables] = useState(null);
   const [datasetInfo, setDatasetInfo] = useState(null);
+  const [datasetInfoEdited, setDatasetInfoEdited] = useState(false);
 
   useEffect(() => {
     axios
@@ -41,14 +45,41 @@ function Dataset() {
   }, [project, dataset]);
 
   useEffect(() => {
+    if (datasetInfoEdited && dispatch !== undefined) {
+      dispatch(
+        add_alert(
+          "datasetInfoEdited",
+          "As informações do dataset foram editadas. Clique em salvar para confirmar as alterações.",
+          "warning"
+        )
+      );
+    } else {
+      dispatch(remove_alert("datasetInfoEdited"));
+    }
+  }, [datasetInfoEdited, dispatch]);
+
+  useEffect(() => {
     const onChange = (e) => {
       switch (e.target.id) {
         case "project":
           break;
         default:
           setDatasetInfo({ ...datasetInfo, [e.target.id]: e.target.value });
+          setDatasetInfoEdited(true);
           break;
       }
+    };
+    const onSubmit = (e) => {
+      e.preventDefault();
+      axios
+        .put(convertUrlToInternal(datasetInfo.url), datasetInfo)
+        .then((response) => {
+          setDatasetInfoEdited(false);
+          router.push("/discover/" + project + "/" + response.data.name);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     };
     if (loading) {
       setContent(
@@ -77,7 +108,7 @@ function Dataset() {
           <div className="container-fluid">
             {datasetInfo && (
               <div className="collapse" id="collapseForm">
-                <form className="row g-3" action="#">
+                <form className="row g-3" onSubmit={onSubmit}>
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
                       <strong>Nome *</strong>
