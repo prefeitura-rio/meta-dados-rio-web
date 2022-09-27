@@ -17,6 +17,8 @@ function Projeto() {
 
   const [content, setContent] = useState(<></>);
   const [datasets, setDatasets] = useState(null);
+  const [projectInfo, setProjectInfo] = useState(null);
+
   useEffect(() => {
     axios
       .get("/api/meta/projects/?name=" + project)
@@ -28,6 +30,7 @@ function Projeto() {
           data[0].datasets.length > 0
         ) {
           setDatasets(data[0].datasets);
+          setProjectInfo(data[0]);
         } else {
           setDatasets([]);
         }
@@ -48,9 +51,47 @@ function Projeto() {
       setContent(
         <div className="p-3 bg-light rounded-3">
           <div className="container-fluid py-3">
-            <h1 className="display-6 fw-bold">Datasets</h1>
+            <h1 className="display-6 fw-bold">
+              Projeto {project}{" "}
+              <button
+                className="ml-2 h6 border-2 bg-blue-600 rounded-lg px-6 py-2 hover:bg-blue-800 hover:text-white drop-shadow-md"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseForm"
+                aria-expanded="false"
+                aria-controls="collapseForm"
+              >
+                Editar
+              </button>
+            </h1>
           </div>
           <div className="container-fluid">
+            {projectInfo && (
+              <div className="collapse" id="collapseForm">
+                <form className="row g-3" action="#">
+                  <div className="col-md-6">
+                    <label htmlFor="name" className="form-label">
+                      Nome
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      value={projectInfo.name}
+                    />
+                    <button
+                      type="submit"
+                      className="mt-3 border-2 bg-blue-600 rounded-lg px-6 py-2 hover:bg-blue-800 hover:text-white drop-shadow-md"
+                    >
+                      Salvar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+          <div className="container-fluid mt-5">
+            <h1 className="display-6 fw-bold">Lista de datasets</h1>
             <div className="row p-3">
               {datasets &&
                 datasets.map((datasets) => (
@@ -91,7 +132,7 @@ function Projeto() {
     } else {
       router.push("/login");
     }
-  }, [loading, isAuthenticated, router, datasets, project]);
+  }, [loading, isAuthenticated, router, datasets, project, projectInfo]);
 
   return (
     <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">
