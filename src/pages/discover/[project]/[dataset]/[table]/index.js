@@ -121,63 +121,62 @@ function Table() {
               return 0;
             });
             setColumns(data[0].columns);
-            setTableInfo(data[0]);
-            let spreadsheetData = [];
-            spreadsheetData.push([
-              {
-                value: "Nome da coluna",
-                className: "fw-bold text-center",
-                readOnly: true
-              },
-              {
-                value: "Tipo",
-                className: "fw-bold text-center",
-                readOnly: true
-              },
-              {
-                value: "Descrição",
-                className: "fw-bold text-center",
-                readOnly: true
-              },
-              {
-                value: "Observações",
-                className: "fw-bold text-center",
-                readOnly: true
-              },
-              {
-                value: "Nome original da coluna",
-                className: "fw-bold text-center",
-                readOnly: true
-              }
-            ]);
-            data[0].columns.forEach((column) => {
-              let columnData = [];
-              columnData.push({
-                value: column.name,
-                className: "text-center"
-              });
-              columnData.push({
-                value: column.type,
-                className: "text-center"
-              });
-              columnData.push({
-                value: column.description,
-                className: "text-center"
-              });
-              columnData.push({
-                value: column.comments,
-                className: "text-center"
-              });
-              columnData.push({
-                value: column.original_name,
-                className: "text-center"
-              });
-              spreadsheetData.push(columnData);
-            });
-            setSpreadsheetData(spreadsheetData);
           } else {
             setColumns([]);
           }
+          let spreadsheetData = [];
+          spreadsheetData.push([
+            {
+              value: "Nome da coluna",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            {
+              value: "Tipo",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            {
+              value: "Descrição",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            {
+              value: "Observações",
+              className: "fw-bold text-center",
+              readOnly: true
+            },
+            {
+              value: "Nome original da coluna",
+              className: "fw-bold text-center",
+              readOnly: true
+            }
+          ]);
+          data[0].columns.forEach((column) => {
+            let columnData = [];
+            columnData.push({
+              value: column.name,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.type,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.description,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.comments,
+              className: "text-center"
+            });
+            columnData.push({
+              value: column.original_name,
+              className: "text-center"
+            });
+            spreadsheetData.push(columnData);
+          });
+          setSpreadsheetData(spreadsheetData);
         } else {
           console.error("Table not found");
         }
@@ -186,6 +185,37 @@ function Table() {
         console.error("Failed to fetch authenticated API");
       });
   }, [project, dataset, table]);
+
+  useEffect(() => {
+    // Delay to avoid infinite loop
+    const timer = setTimeout(() => {
+      // Check if there's data in the last row of the spreadsheet
+      if (spreadsheetData) {
+        let lastRow = spreadsheetData[spreadsheetData.length - 1];
+        let lastRowEmpty = true;
+        lastRow.forEach((cell) => {
+          if (cell && cell.value) {
+            lastRowEmpty = false;
+          }
+        });
+        if (!lastRowEmpty) {
+          console.log("lastRowEmpty");
+          setSpreadsheetData([
+            ...spreadsheetData,
+            [
+              { value: null, className: "text-center" },
+              { value: null, className: "text-center" },
+              { value: null, className: "text-center" },
+              { value: null, className: "text-center" },
+              { value: null, className: "text-center" }
+            ]
+          ]);
+        } else {
+          console.log("lastRowNotEmpty");
+        }
+      }
+    }, 100);
+  }, [spreadsheetData]);
 
   useEffect(() => {
     if (tableInfoEdited && dispatch !== undefined) {
@@ -533,17 +563,6 @@ function Table() {
               </div>
             )}
             <div className="row p-3">
-              {columns && columns.length === 0 && (
-                <div className="col-md-12">
-                  <div className="card mt-4">
-                    <div className="p-3">
-                      <h2 className="card-title fw-bold">
-                        Nenhuma coluna encontrada! 😭
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-              )}
               {!columns && (
                 <div className="col-md-12">
                   <Oval color="#00BFFF" width={30} height={30} />
