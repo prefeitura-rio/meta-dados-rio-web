@@ -188,7 +188,7 @@ function Table() {
 
   useEffect(() => {
     // Delay to avoid infinite loop
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       // Check if there's data in the last row of the spreadsheet
       if (spreadsheetData) {
         let lastRow = spreadsheetData[spreadsheetData.length - 1];
@@ -199,7 +199,6 @@ function Table() {
           }
         });
         if (!lastRowEmpty) {
-          console.log("lastRowEmpty");
           setSpreadsheetData([
             ...spreadsheetData,
             [
@@ -210,8 +209,6 @@ function Table() {
               { value: null, className: "text-center" }
             ]
           ]);
-        } else {
-          console.log("lastRowNotEmpty");
         }
       }
     }, 100);
