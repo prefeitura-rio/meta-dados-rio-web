@@ -41,6 +41,15 @@ function Dataset() {
   }, [project, dataset]);
 
   useEffect(() => {
+    const onChange = (e) => {
+      switch (e.target.id) {
+        case "project":
+          break;
+        default:
+          setDatasetInfo({ ...datasetInfo, [e.target.id]: e.target.value });
+          break;
+      }
+    };
     if (loading) {
       setContent(
         <div className="d-flex justify-content-center align-items-center mt-5">
@@ -71,34 +80,40 @@ function Dataset() {
                 <form className="row g-3" action="#">
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
-                      Nome
+                      <strong>Nome *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="name"
+                      onChange={onChange}
                       value={datasetInfo.name}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="title_prefix" className="form-label">
-                      Prefixo de título de tabelas
+                      <strong>Prefixo de título de tabelas *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="title_prefix"
+                      onChange={onChange}
                       value={datasetInfo.title_prefix}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="project" className="form-label">
-                      Projeto
+                      <strong>Projeto *</strong>
                     </label>
                     <select
                       className="form-select"
                       aria-label="Projeto"
                       id="project"
+                      onChange={onChange}
+                      required
                     >
                       <option selected value={datasetInfo.project}>
                         project1

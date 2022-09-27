@@ -41,6 +41,9 @@ function Projeto() {
   }, [project]);
 
   useEffect(() => {
+    const onChange = (e) => {
+      setProjectInfo({ ...projectInfo, [e.target.id]: e.target.value });
+    };
     if (loading) {
       setContent(
         <div className="d-flex justify-content-center align-items-center mt-5">
@@ -71,13 +74,15 @@ function Projeto() {
                 <form className="row g-3" action="#">
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
-                      Nome
+                      <strong>Nome *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="name"
+                      onChange={onChange}
                       value={projectInfo.name}
+                      required
                     />
                     <button
                       type="submit"

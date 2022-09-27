@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import React from "react";
 import Layout from "../../../../../hocs/Layout";
 import { Oval } from "react-loader-spinner";
-import Link from "next/link";
 import axios from "axios";
 import Spreadsheet from "react-spreadsheet";
 
@@ -99,6 +98,21 @@ function Table() {
   }, [project, dataset, table]);
 
   useEffect(() => {
+    const onChange = (e) => {
+      switch (e.target.id) {
+        case "categories":
+          break;
+        case "dataset":
+          break;
+        case "tags":
+          break;
+        case "update_frequency":
+          break;
+        default:
+          setTableInfo({ ...tableInfo, [e.target.id]: e.target.value });
+          break;
+      }
+    };
     if (loading) {
       setContent(
         <div className="d-flex justify-content-center align-items-center mt-5">
@@ -129,56 +143,66 @@ function Table() {
                 <form className="row g-3" action="#">
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
-                      Nome
+                      <strong>Nome *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="name"
+                      onChange={onChange}
                       value={tableInfo.name}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="title" className="form-label">
-                      Título da tabela
+                      <strong>Título da tabela *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="title"
+                      onChange={onChange}
                       value={tableInfo.title}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="short_description" className="form-label">
-                      Descrição curta
+                      <strong>Descrição curta *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="short_description"
+                      onChange={onChange}
                       value={tableInfo.short_description}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="long_description" className="form-label">
-                      Descrição longa
+                      <strong>Descrição longa *</strong>
                     </label>
                     <textarea
                       className="form-control"
                       id="long_description"
+                      onChange={onChange}
                       value={tableInfo.long_description}
+                      required
                       rows="3"
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="update_frequency" className="form-label">
-                      Frequência de atualização
+                      <strong>Frequência de atualização *</strong>
                     </label>
                     <select
                       className="form-select"
                       aria-label="Frequência de atualização"
                       id="update_frequency"
+                      onChange={onChange}
+                      required
                     >
                       <option selected value={tableInfo.update_frequency}>
                         {tableInfo.update_frequency}
@@ -188,78 +212,92 @@ function Table() {
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="temporal_coverage" className="form-label">
-                      Cobertura temporal
+                      <strong>Cobertura temporal *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="temporal_coverage"
+                      onChange={onChange}
                       value={tableInfo.temporal_coverage}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="data_owner" className="form-label">
-                      Órgão responsável pelo dado
+                      <strong>Órgão responsável pelo dado *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="data_owner"
+                      onChange={onChange}
                       value={tableInfo.data_owner}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="publisher_name" className="form-label">
-                      Nome do publicador
+                      <strong>Nome do publicador *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="publisher_name"
+                      onChange={onChange}
                       value={tableInfo.publisher_name}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="publisher_email" className="form-label">
-                      E-mail do publicador
+                      <strong>E-mail do publicador *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="publisher_email"
+                      onChange={onChange}
                       value={tableInfo.publisher_email}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="source_database" className="form-label">
-                      Banco de dados de origem
+                      <strong>Banco de dados de origem *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="source_database"
+                      onChange={onChange}
                       value={tableInfo.source_database}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="source_table" className="form-label">
-                      Tabela de origem
+                      <strong>Tabela de origem *</strong>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="source_table"
+                      onChange={onChange}
                       value={tableInfo.source_table}
+                      required
                     />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="source_query" className="form-label">
-                      Query de extração
+                      <strong>Query de extração *</strong>
                     </label>
                     <textarea
                       className="form-control"
                       id="source_query"
+                      onChange={onChange}
                       value={tableInfo.source_query}
+                      required
                       rows="3"
                     />
                   </div>
@@ -272,6 +310,7 @@ function Table() {
                       multiple
                       aria-label="Tags"
                       id="tags"
+                      onChange={onChange}
                     >
                       <option selected value={tableInfo.tags}>
                         {tableInfo.tags}
@@ -288,6 +327,7 @@ function Table() {
                       multiple
                       aria-label="Categorias"
                       id="categories"
+                      onChange={onChange}
                     >
                       <option selected value={tableInfo.categories}>
                         {tableInfo.categories}
@@ -297,12 +337,14 @@ function Table() {
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="dataset" className="form-label">
-                      Dataset
+                      <strong>Dataset *</strong>
                     </label>
                     <select
                       className="form-select"
                       aria-label="Dataset"
                       id="dataset"
+                      onChange={onChange}
+                      required
                     >
                       <option selected value={tableInfo.dataset}>
                         {tableInfo.dataset}
