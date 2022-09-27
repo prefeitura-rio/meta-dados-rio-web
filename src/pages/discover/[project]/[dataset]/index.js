@@ -19,9 +19,33 @@ function Dataset() {
   const loading = useSelector((state) => state.auth.loading);
 
   const [content, setContent] = useState(<></>);
+  const [projects, setProjects] = useState(null);
   const [tables, setTables] = useState(null);
   const [datasetInfo, setDatasetInfo] = useState(null);
   const [datasetInfoEdited, setDatasetInfoEdited] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("/api/meta/projects/")
+      .then((response) => {
+        const data = response.data;
+        if (data.length > 0) {
+          data.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+          setProjects(data);
+        }
+      })
+      .catch(() => {
+        console.error("Failed to fetch authenticated API");
+      });
+  }, []);
 
   useEffect(() => {
     axios
@@ -31,6 +55,15 @@ function Dataset() {
         if (data.length > 0) {
           setDatasetInfo(data[0]);
           if (data[0].tables !== undefined && data[0].tables.length > 0) {
+            data[0].tables.sort((a, b) => {
+              if (a.name < b.name) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+            });
             setTables(data[0].tables);
             setDatasetInfo(data[0]);
           } else {
@@ -61,14 +94,8 @@ function Dataset() {
 
   useEffect(() => {
     const onChange = (e) => {
-      switch (e.target.id) {
-        case "project":
-          break;
-        default:
-          setDatasetInfo({ ...datasetInfo, [e.target.id]: e.target.value });
-          setDatasetInfoEdited(true);
-          break;
-      }
+      setDatasetInfo({ ...datasetInfo, [e.target.id]: e.target.value });
+      setDatasetInfoEdited(true);
     };
     const onSubmit = (e) => {
       e.preventDefault();
@@ -76,7 +103,12 @@ function Dataset() {
         .put(convertUrlToInternal(datasetInfo.url), datasetInfo)
         .then((response) => {
           setDatasetInfoEdited(false);
-          router.push("/discover/" + project + "/" + response.data.name);
+          let currentProject = projects.filter(
+            (project) => project.url === datasetInfo.project
+          )[0];
+          router.push(
+            "/discover/" + currentProject.name + "/" + response.data.name
+          );
         })
         .catch((error) => {
           console.error(error);
@@ -145,12 +177,15 @@ function Dataset() {
                       aria-label="Projeto"
                       id="project"
                       onChange={onChange}
+                      value={datasetInfo.project}
                       required
                     >
-                      <option selected value={datasetInfo.project}>
-                        project1
-                      </option>
-                      <option value="project2">project2</option>
+                      {projects &&
+                        projects.map((project) => (
+                          <option key={project.id} value={project.url}>
+                            {project.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                   <div className="col-md-12">
@@ -209,7 +244,16 @@ function Dataset() {
     } else {
       router.push("/login");
     }
-  }, [loading, isAuthenticated, router, tables, project, dataset, datasetInfo]);
+  }, [
+    loading,
+    isAuthenticated,
+    router,
+    tables,
+    project,
+    dataset,
+    datasetInfo,
+    projects
+  ]);
 
   return (
     <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">

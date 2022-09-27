@@ -19,10 +19,82 @@ function Table() {
   const loading = useSelector((state) => state.auth.loading);
 
   const [content, setContent] = useState(<></>);
+  const [datasets, setDatasets] = useState(null);
+  const [tags, setTags] = useState(null);
+  const [categories, setCategories] = useState(null);
   const [columns, setColumns] = useState(null);
   const [tableInfo, setTableInfo] = useState(null);
   const [tableInfoEdited, setTableInfoEdited] = useState(false);
   const [spreadsheetData, setSpreadsheetData] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("/api/meta/datasets/")
+      .then((response) => {
+        const data = response.data;
+        if (data.length > 0) {
+          data.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+          setDatasets(data);
+        }
+      })
+      .catch(() => {
+        console.error("Failed to fetch authenticated API");
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("/api/meta/tags/")
+      .then((response) => {
+        const data = response.data;
+        if (data.length > 0) {
+          data.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+          setTags(data);
+        }
+      })
+      .catch(() => {
+        console.error("Failed to fetch authenticated API");
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("/api/meta/categories/")
+      .then((response) => {
+        const data = response.data;
+        if (data.length > 0) {
+          data.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+          setCategories(data);
+        }
+      })
+      .catch(() => {
+        console.error("Failed to fetch authenticated API");
+      });
+  }, []);
 
   useEffect(() => {
     axios
@@ -39,6 +111,15 @@ function Table() {
         if (data.length > 0) {
           setTableInfo(data[0]);
           if (data[0].columns !== undefined && data[0].columns.length > 0) {
+            data[0].columns.sort((a, b) => {
+              if (a.name < b.name) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+            });
             setColumns(data[0].columns);
             setTableInfo(data[0]);
             let spreadsheetData = [];
@@ -124,12 +205,32 @@ function Table() {
     const onChange = (e) => {
       switch (e.target.id) {
         case "categories":
-          break;
-        case "dataset":
+          let currentCategories = [...tableInfo.categories];
+          if (currentCategories.includes(e.target.value)) {
+            currentCategories = currentCategories.filter(
+              (category) => category !== e.target.value
+            );
+          } else {
+            currentCategories.push(e.target.value);
+          }
+          setTableInfo({
+            ...tableInfo,
+            categories: currentCategories
+          });
+          setTableInfoEdited(true);
           break;
         case "tags":
-          break;
-        case "update_frequency":
+          let currentTags = [...tableInfo.tags];
+          if (currentTags.includes(e.target.value)) {
+            currentTags = currentTags.filter((tag) => tag !== e.target.value);
+          } else {
+            currentTags.push(e.target.value);
+          }
+          setTableInfo({
+            ...tableInfo,
+            tags: currentTags
+          });
+          setTableInfoEdited(true);
           break;
         default:
           setTableInfo({ ...tableInfo, [e.target.id]: e.target.value });
@@ -143,8 +244,16 @@ function Table() {
         .put(convertUrlToInternal(tableInfo.url), tableInfo)
         .then((response) => {
           setTableInfoEdited(false);
+          let currentDataset = datasets.filter(
+            (dataset) => dataset.url === tableInfo.dataset
+          )[0];
           router.push(
-            "/discover/" + project + "/" + dataset + "/" + response.data.name
+            "/discover/" +
+              project +
+              "/" +
+              currentDataset.name +
+              "/" +
+              response.data.name
           );
         })
         .catch((error) => {
@@ -240,12 +349,14 @@ function Table() {
                       aria-label="Frequência de atualização"
                       id="update_frequency"
                       onChange={onChange}
+                      value={tableInfo.update_frequency}
                       required
                     >
-                      <option selected value={tableInfo.update_frequency}>
-                        {tableInfo.update_frequency}
-                      </option>
-                      <option value="aaaa">aaaa</option>
+                      <option value="Nunca">Nunca</option>
+                      <option value="Diário">Diário</option>
+                      <option value="Semanal">Semanal</option>
+                      <option value="Mensal">Mensal</option>
+                      <option value="Anual">Anual</option>
                     </select>
                   </div>
                   <div className="col-md-6">
@@ -349,11 +460,14 @@ function Table() {
                       aria-label="Tags"
                       id="tags"
                       onChange={onChange}
+                      value={tableInfo.tags}
                     >
-                      <option selected value={tableInfo.tags}>
-                        {tableInfo.tags}
-                      </option>
-                      <option value="aaaa">aaaa</option>
+                      {tags &&
+                        tags.map((tag) => (
+                          <option key={tag.id} value={tag.name}>
+                            {tag.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                   <div className="col-md-6">
@@ -366,11 +480,14 @@ function Table() {
                       aria-label="Categorias"
                       id="categories"
                       onChange={onChange}
+                      value={tableInfo.categories}
                     >
-                      <option selected value={tableInfo.categories}>
-                        {tableInfo.categories}
-                      </option>
-                      <option value="aaaa">aaaa</option>
+                      {categories &&
+                        categories.map((category) => (
+                          <option key={category.id} value={category.path}>
+                            {category.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                   <div className="col-md-6">
@@ -382,12 +499,15 @@ function Table() {
                       aria-label="Dataset"
                       id="dataset"
                       onChange={onChange}
+                      value={tableInfo.dataset}
                       required
                     >
-                      <option selected value={tableInfo.dataset}>
-                        {tableInfo.dataset}
-                      </option>
-                      <option value="aaaa">aaaa</option>
+                      {datasets &&
+                        datasets.map((dataset) => (
+                          <option key={dataset.id} value={dataset.url}>
+                            {dataset.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                   <div className="col-md-12">
@@ -445,7 +565,10 @@ function Table() {
     dataset,
     table,
     tableInfo,
-    spreadsheetData
+    spreadsheetData,
+    datasets,
+    tags,
+    categories
   ]);
 
   return (
