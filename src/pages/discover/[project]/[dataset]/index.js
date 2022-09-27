@@ -28,15 +28,16 @@ function Dataset() {
       .get("/api/meta/datasets/?project=" + project + "&name=" + dataset)
       .then((response) => {
         const data = response.data;
-        if (
-          data.length > 0 &&
-          data[0].tables !== undefined &&
-          data[0].tables.length > 0
-        ) {
-          setTables(data[0].tables);
+        if (data.length > 0) {
           setDatasetInfo(data[0]);
+          if (data[0].tables !== undefined && data[0].tables.length > 0) {
+            setTables(data[0].tables);
+            setDatasetInfo(data[0]);
+          } else {
+            setTables([]);
+          }
         } else {
-          setTables([]);
+          console.error("Dataset not found");
         }
       })
       .catch(() => {

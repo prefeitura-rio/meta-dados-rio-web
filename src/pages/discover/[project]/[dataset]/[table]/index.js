@@ -36,64 +36,69 @@ function Table() {
       )
       .then((response) => {
         const data = response.data;
-        if (
-          data.length > 0 &&
-          data[0].columns !== undefined &&
-          data[0].columns.length > 0
-        ) {
-          setColumns(data[0].columns);
+        if (data.length > 0) {
           setTableInfo(data[0]);
-          let spreadsheetData = [];
-          spreadsheetData.push([
-            {
-              value: "Nome da coluna",
-              className: "fw-bold text-center",
-              readOnly: true
-            },
-            { value: "Tipo", className: "fw-bold text-center", readOnly: true },
-            {
-              value: "Descrição",
-              className: "fw-bold text-center",
-              readOnly: true
-            },
-            {
-              value: "Observações",
-              className: "fw-bold text-center",
-              readOnly: true
-            },
-            {
-              value: "Nome original da coluna",
-              className: "fw-bold text-center",
-              readOnly: true
-            }
-          ]);
-          data[0].columns.forEach((column) => {
-            let columnData = [];
-            columnData.push({
-              value: column.name,
-              className: "text-center"
+          if (data[0].columns !== undefined && data[0].columns.length > 0) {
+            setColumns(data[0].columns);
+            setTableInfo(data[0]);
+            let spreadsheetData = [];
+            spreadsheetData.push([
+              {
+                value: "Nome da coluna",
+                className: "fw-bold text-center",
+                readOnly: true
+              },
+              {
+                value: "Tipo",
+                className: "fw-bold text-center",
+                readOnly: true
+              },
+              {
+                value: "Descrição",
+                className: "fw-bold text-center",
+                readOnly: true
+              },
+              {
+                value: "Observações",
+                className: "fw-bold text-center",
+                readOnly: true
+              },
+              {
+                value: "Nome original da coluna",
+                className: "fw-bold text-center",
+                readOnly: true
+              }
+            ]);
+            data[0].columns.forEach((column) => {
+              let columnData = [];
+              columnData.push({
+                value: column.name,
+                className: "text-center"
+              });
+              columnData.push({
+                value: column.type,
+                className: "text-center"
+              });
+              columnData.push({
+                value: column.description,
+                className: "text-center"
+              });
+              columnData.push({
+                value: column.comments,
+                className: "text-center"
+              });
+              columnData.push({
+                value: column.original_name,
+                className: "text-center"
+              });
+              spreadsheetData.push(columnData);
             });
-            columnData.push({
-              value: column.type,
-              className: "text-center"
-            });
-            columnData.push({
-              value: column.description,
-              className: "text-center"
-            });
-            columnData.push({
-              value: column.comments,
-              className: "text-center"
-            });
-            columnData.push({
-              value: column.original_name,
-              className: "text-center"
-            });
-            spreadsheetData.push(columnData);
-          });
-          setSpreadsheetData(spreadsheetData);
+            setSpreadsheetData(spreadsheetData);
+          } else {
+            setColumns([]);
+          }
         } else {
-          setColumns([]);
+          console.error("Table not found");
         }
       })
       .catch(() => {

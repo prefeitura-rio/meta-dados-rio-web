@@ -27,16 +27,17 @@ function Projeto() {
     axios
       .get("/api/meta/projects/?name=" + project)
       .then((response) => {
+        console.log(response.data[0]);
         const data = response.data;
-        if (
-          data.length > 0 &&
-          data[0].datasets !== undefined &&
-          data[0].datasets.length > 0
-        ) {
-          setDatasets(data[0].datasets);
+        if (data.length > 0) {
           setProjectInfo(data[0]);
+          if (data[0].datasets !== undefined && data[0].datasets.length > 0) {
+            setDatasets(data[0].datasets);
+          } else {
+            setDatasets([]);
+          }
         } else {
-          setDatasets([]);
+          console.error("Project not found");
         }
       })
       .catch(() => {
