@@ -1,3 +1,4 @@
+// Auth
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const RESET_REGISTER_SUCCESS = "RESET_REGISTER_SUCCESS";
@@ -13,3 +14,8 @@ export const REFRESH_SUCCESS = "REFRESH_SUCCESS";
 export const REFRESH_FAIL = "REFRESH_FAIL";
 export const SET_AUTH_LOADING = "SET_AUTH_LOADING";
 export const REMOVE_AUTH_LOADING = "REMOVE_AUTH_LOADING";
+
+// Alert
+export const ADD_ALERT = "ADD_ALERT";
+export const REMOVE_ALERT = "REMOVE_ALERT";
+export const CLEAR_ALERTS = "CLEAR_ALERTS";
