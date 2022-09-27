@@ -23,9 +23,88 @@ function Table() {
   const [tags, setTags] = useState(null);
   const [categories, setCategories] = useState(null);
   const [columns, setColumns] = useState(null);
+  const [columnsUpdate, setColumnsUpdate] = useState(null);
   const [tableInfo, setTableInfo] = useState(null);
   const [tableInfoEdited, setTableInfoEdited] = useState(false);
   const [spreadsheetData, setSpreadsheetData] = useState(null);
+
+  useEffect(() => {
+    console.log(columns);
+  }, [columns]);
+
+  useEffect(() => {
+    console.log(columnsUpdate);
+  }, [columnsUpdate]);
+
+  useEffect(() => {
+    if (spreadsheetData) {
+      let columnsCopy = [...columns];
+      // Iterate over each row, starting at 1 to skip the header row
+      for (let i = 1; i < spreadsheetData.length; i++) {
+        // Check if all cells in the row are empty
+        if (
+          spreadsheetData[i].every((cell) => !cell || (cell && !cell.value))
+        ) {
+          // If so, skip to the next row
+          continue;
+        }
+        if (i - 1 < columnsCopy.length) {
+          // Replace attributes
+          if (spreadsheetData[i][0]) {
+            columnsCopy[i - 1].name = spreadsheetData[i][0].value;
+          } else {
+            columnsCopy[i - 1].name = "";
+          }
+          if (spreadsheetData[i][1]) {
+            columnsCopy[i - 1].type = spreadsheetData[i][1].value;
+          } else {
+            columnsCopy[i - 1].type = "";
+          }
+          if (spreadsheetData[i][2]) {
+            columnsCopy[i - 1].description = spreadsheetData[i][2].value;
+          } else {
+            columnsCopy[i - 1].description = "";
+          }
+          if (spreadsheetData[i][3]) {
+            columnsCopy[i - 1].comments = spreadsheetData[i][3].value;
+          } else {
+            columnsCopy[i - 1].comments = "";
+          }
+          if (spreadsheetData[i][4]) {
+            columnsCopy[i - 1].original_name = spreadsheetData[i][4].value;
+          } else {
+            columnsCopy[i - 1].original_name = "";
+          }
+        } else {
+          // Add new entries
+          let newColumn = {
+            name: "",
+            type: "",
+            description: "",
+            comments: "",
+            original_name: ""
+          };
+          if (spreadsheetData[i][0]) {
+            newColumn.name = spreadsheetData[i][0].value;
+          }
+          if (spreadsheetData[i][1]) {
+            newColumn.type = spreadsheetData[i][1].value;
+          }
+          if (spreadsheetData[i][2]) {
+            newColumn.description = spreadsheetData[i][2].value;
+          }
+          if (spreadsheetData[i][3]) {
+            newColumn.comments = spreadsheetData[i][3].value;
+          }
+          if (spreadsheetData[i][4]) {
+            newColumn.original_name = spreadsheetData[i][4].value;
+          }
+          columnsCopy.push(newColumn);
+        }
+      }
+      setColumnsUpdate(columnsCopy);
+    }
+  }, [spreadsheetData, columns]);
 
   useEffect(() => {
     axios
@@ -286,6 +365,51 @@ function Table() {
         .catch((error) => {
           console.error(error);
         });
+    };
+    const saveColumns = (e) => {
+      e.preventDefault();
+      let errors = 0;
+      let newColumns = [];
+      let editedColumns = [];
+      columnsUpdate.forEach((columnUpdate) => {
+        // If there's an URL, it means the column already exists
+        if (columnUpdate.url) {
+          editedColumns.push(columnUpdate);
+        } else {
+          newColumns.push(columnUpdate);
+        }
+      });
+      // For each edited column, make a PUT request
+      editedColumns.forEach((column) => {
+        axios
+          .put(convertUrlToInternal(column.url), column)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            errors += 1;
+          });
+      });
+      // For each new column, make a POST request
+      newColumns.forEach((column) => {
+        axios
+          .post("/api/meta/columns", {
+            ...column,
+            table: tableInfo.url
+          })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            errors += 1;
+          });
+      });
+      // Refresh page to get the new columns (if no errors)
+      if (errors === 0) {
+        router.reload();
+      } else {
+        console.error("Failed to save columns");
+      }
     };
     if (loading) {
       setContent(
@@ -550,7 +674,17 @@ function Table() {
             )}
           </div>
           <div className="container-fluid mt-5">
-            <h1 className="display-6 fw-bold">Colunas</h1>
+            <h1 className="display-6 fw-bold">
+              Colunas
+              <button
+                className="ml-2 h6 border-2 bg-blue-600 rounded-lg px-6 py-2 hover:bg-blue-800 hover:text-white drop-shadow-md"
+                type="button"
+                aria-expanded="false"
+                onClick={saveColumns}
+              >
+                Salvar
+              </button>
+            </h1>
             {spreadsheetData !== null && (
               <div className="p-3 table-responsive">
                 <Spreadsheet
@@ -584,7 +718,8 @@ function Table() {
     spreadsheetData,
     datasets,
     tags,
-    categories
+    categories,
+    columnsUpdate
   ]);
 
   return (
