@@ -14,27 +14,32 @@ const Discover = () => {
   const loading = useSelector((state) => state.auth.loading);
 
   const [content, setContent] = useState(<></>);
-//  const [projects, setProjects] = useState([]);
-  
-//    const fetchData = async () => {
-//      const res = await fetch("/api/meta/projects");
-//      const data = await res.json();
-//      setProjects(data);
-//    };
-//    fetchData();
-  const [projectos, setProject] = useState([]);
+  const [projects, setProjects] = useState(null);
 
-  useEffect(() => {  
+  useEffect(() => {
     axios
-      .get("https://meta.dados.rio/api/projects/")
-      .then(( response ) =>{
-        console.log(response.data.results)
+      .get("/api/meta/projects")
+      .then((response) => {
+        const data = response.data;
+        if (data.length > 0) {
+          data.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+          setProjects(data);
+        } else {
+          setProjects([]);
+        }
       })
       .catch(() => {
-        console.log("deu ruim")
-      })
-
-    }, []);
+        console.error("Failed to fetch authenticated API");
+      });
+  }, []);
 
   useEffect(() => {
     if (loading) {
@@ -51,21 +56,23 @@ const Discover = () => {
           </div>
           <div className="container-fluid">
             <div className="row p-3">
-              {projectos.map((projectos) => (
-                <div key={projectos.name} className="col-md-4">
-                  <div className="card mt-4">
-                    <Link href={`/discover/${projectos.name}`}>
-                      <div className="btn btn-primary">
-                        <div className="p-3">
-                          <h2 className="card-title fw-bold">{projectos.name}</h2>
+              {projects &&
+                projects.map((projects) => (
+                  <div key={projects.name} className="col-md-4">
+                    <div className="card mt-4">
+                      <Link href={`/discover/${projects.name}`}>
+                        <div className="btn btn-primary">
+                          <div className="p-3">
+                            <h2 className="card-title fw-bold">
+                              {projects.name}
+                            </h2>
+                          </div>
                         </div>
-                      </div>
-                    </Link> 
-                    
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ))}
-              {projectos === [] && (
+                ))}
+              {projects && projects.length === 0 && (
                 <div className="col-md-12">
                   <div className="card mt-4">
                     <div className="p-3">
@@ -76,6 +83,11 @@ const Discover = () => {
                   </div>
                 </div>
               )}
+              {!projects && (
+                <div className="col-md-12">
+                  <Oval color="#00BFFF" width={30} height={30} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -83,7 +95,7 @@ const Discover = () => {
     } else {
       router.push("/login");
     }
-  }, [loading, isAuthenticated, router,]);
+  }, [loading, isAuthenticated, router, projects]);
 
   return (
     <Layout pageName="Dashboard" content="Dashboard page for Metadados Rio">
